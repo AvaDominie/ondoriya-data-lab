@@ -1,0 +1,8 @@
+minio
+dbt-snowflake
+pandas
+requests
+python-dotenv
+snowflake-connector-python[pandas]
+dbt-core
+dbt-snowflake
