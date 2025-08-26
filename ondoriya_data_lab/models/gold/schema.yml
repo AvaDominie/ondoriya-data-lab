@@ -1,0 +1,84 @@
+version: 2
+
+models:
+  - name: demographic
+    description: "Gold layer table combining faction_distribution, households, and people."
+    columns:
+      - name: Faction
+        description: "Faction name"
+      - name: Regions
+        description: "Number of regions for the faction"
+      - name: Percent
+        description: "Percent of total for the faction"
+      - name: household_id
+        description: "Household ID"
+      - name: household_type
+        description: "Type of household"
+      - name: person_id
+        description: "Person ID"
+      - name: first_name
+        description: "First name of person"
+      - name: age
+        description: "Age of person"
+      - name: language
+        description: "Language spoken by person"
+      - name: current_region_id
+        description: "Current region ID for person"
+      - name: family_name
+        description: "Family name of person"
+
+  - name: geographic
+    description: "Gold layer table combining planets, regions, region_biome, and moons."
+    columns:
+      - name: World_ID
+        description: "World ID"
+      - name: World_Name
+        description: "World name"
+      - name: Star_System
+        description: "Star system name"
+      - name: Planet_Type
+        description: "Type of planet"
+      - name: Region_ID
+        description: "Region ID"
+      - name: region_name
+        description: "Region name"
+      - name: Biome
+        description: "Biome of the region"
+      - name: Moon_ID
+        description: "Moon ID"
+      - name: Moon_Name
+        description: "Moon name"
+      - name: Settlement_Formal
+        description: "Formal settlement name"
+      - name: Colloquial
+        description: "Colloquial name"
+      - name: Staff_Size
+        description: "Staff size of the moon settlement"
+      - name: Specialty
+        description: "Specialty of the moon settlement"
+
+  - name: cultural
+    description: "Gold layer table combining language_building_blocks, language_roots, and moons."
+    columns:
+      - name: Language_ID
+        description: "Language ID from language_building_blocks"
+      - name: Language_Name
+        description: "Language name"
+      - name: Branch_From
+        description: "Language branch/origin"
+      - name: Phonology_Notes
+        description: "Phonology notes"
+      - name: Morphology_Patterns
+        description: "Morphology patterns"
+      - name: Example_Roots
+        description: "Example roots"
+      - name: Root
+        description: "Root from language_roots"
+      - name: Meaning
+        description: "Meaning of the root"
+      - name: Notes
+        description: "Notes from language_roots"
+      - name: Moon_ID
+        description: "Moon ID from moons"
+      - name: Language_Origin
+        description: "Language origin from moons"

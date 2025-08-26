@@ -70,7 +70,7 @@ FILES_TO_INGEST = [
 def main():
     """
     Connects to MinIO, downloads files from a public URL,
-    and uploads them to a MinIO bucket.
+    and uploads them to a MinIO bucket and Snowflake.
     """
 
     for file_name in FILES_TO_INGEST:
@@ -90,6 +90,45 @@ def main():
                 length=len(response.content)
             )
             logger.info(f"Uploaded {file_name} to MinIO")
+
+            # Prepare table name (remove .csv extension)
+            table_name = os.path.splitext(file_name)[0]
+
+            # Read CSV to DataFrame
+            df = pd.read_csv(io.BytesIO(response.content))
+
+            # Upload to Snowflake
+            conn = snowflake.connector.connect(
+                user=os.getenv("SNOWFLAKE_USER"),
+                password=os.getenv("SNOWFLAKE_PASSWORD"),
+                account=os.getenv("SNOWFLAKE_ACCOUNT"),
+                warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
+                database=os.getenv("SNOWFLAKE_DATABASE"),
+                schema=os.getenv("SNOWFLAKE_SCHEMA_BRONZE"),
+                role=os.getenv("SNOWFLAKE_ROLE") 
+            )
+            cs = conn.cursor()
+            # Dynamically create table if not exists
+            columns = []
+            for col, dtype in zip(df.columns, df.dtypes):
+                if pd.api.types.is_integer_dtype(dtype):
+                    coltype = "NUMBER"
+                elif pd.api.types.is_float_dtype(dtype):
+                    coltype = "FLOAT"
+                elif pd.api.types.is_bool_dtype(dtype):
+                    coltype = "BOOLEAN"
+                elif pd.api.types.is_datetime64_any_dtype(dtype):
+                    coltype = "TIMESTAMP_NTZ"
+                else:
+                    coltype = "STRING"
+                columns.append(f'"{col}" {coltype}')
+            create_stmt = f'CREATE TABLE IF NOT EXISTS "{table_name}" ({', '.join(columns)})'
+            cs.execute(create_stmt)
+            cs.close()
+
+            # Write data
+            write_pandas(conn, df, table_name=table_name)
+            logger.info(f"Uploaded {file_name} to Snowflake as table {table_name}")
 
         except requests.RequestException as e:
             logger.error(f"Error downloading {file_name}: {e}")

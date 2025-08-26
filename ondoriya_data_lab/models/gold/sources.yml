@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: BRONZE
+    database: PROJECT4_DB
+    schema: BRONZE
+    quoting:
+      identifier: true
+    tables:
+      - name: "language_roots"
+      - name: "moons"
+      - name: "language_building_blocks"
+      - name: "faction_distribution"
+      - name: "households"
+      - name: "people"
+      - name: "planets"
+      - name: "regions"
+      - name: "region_biome"
